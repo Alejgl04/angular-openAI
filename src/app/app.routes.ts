@@ -15,7 +15,7 @@ export const routes: Routes = [
         data: {
           icon: 'fa-solid fa-spell-check',
           title: 'Orthography',
-          description: 'Corregir ortografía',
+          description: 'Grammar correction',
         },
       },
       {
