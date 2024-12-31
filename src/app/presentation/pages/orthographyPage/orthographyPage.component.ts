@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { ChatMessagesComponent, MyMessageComponent, TextMessageBoxComponent, TextMessageBoxEvent, TextMessageBoxFileComponent, TextMessageBoxSelectComponent, TextMessageEvent, TypingLoaderComponent } from '@components/index';
+import { ChatMessagesComponent, GptMessageOrthographyComponent, MyMessageComponent, TextMessageBoxComponent, TypingLoaderComponent } from '@components/index';
 import { Message } from '@interfaces/message.interfaces';
 import { OpenAiService } from 'app/presentation/services/openai.service';
 
@@ -11,31 +11,45 @@ import { OpenAiService } from 'app/presentation/services/openai.service';
   imports: [
     CommonModule,
     ChatMessagesComponent,
+    GptMessageOrthographyComponent,
     MyMessageComponent,
     TypingLoaderComponent,
     TextMessageBoxComponent,
-    TextMessageBoxFileComponent,
-    TextMessageBoxSelectComponent,
+
   ],
   templateUrl: './orthographyPage.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class OrthographyPageComponent {
 
-  public messages = signal<Message[]>([{ text: 'Hola mundo', isGpt: false}]);
+  public messages = signal<Message[]>([]);
   public isLoading = signal(false);
 
   public openAiService = inject( OpenAiService )
 
   handleMessage( prompt: string ) {
-    console.log(prompt);
-  }
+    this.isLoading.set(true);
+    this.messages.update( (prev) => [
+      ...prev,
+      {
+        isGpt: false,
+        text: prompt
+      }
+    ]);
 
-  handleMessageWihFile( { prompt, file }: TextMessageEvent ) {
-    console.log({ prompt, file });
-  }
+    this.openAiService.checkOrthography(prompt)
+      .subscribe( resp => {
+        this.isLoading.set(false);
 
-  handleMessageWithSelect( event: TextMessageBoxEvent ) {
-    console.log(event);
+        this.messages.update( prev => [
+          ...prev,
+          {
+            isGpt: true,
+            text: resp.message,
+            info: resp,
+          }
+        ])
+
+      })
   }
 }
