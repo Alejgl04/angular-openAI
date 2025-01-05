@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, input } from '@angular/core';
+import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-chat-messages',
   standalone: true,
-  imports: [],
+  imports: [MarkdownModule],
   templateUrl: './chatMessages.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
