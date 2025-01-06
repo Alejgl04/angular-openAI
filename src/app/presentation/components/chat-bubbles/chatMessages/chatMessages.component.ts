@@ -11,5 +11,7 @@ import { MarkdownModule } from 'ngx-markdown';
 export class ChatMessagesComponent {
 
   text = input.required<string>();
+  @Input() audioUrl?: string;
+
 
 }
