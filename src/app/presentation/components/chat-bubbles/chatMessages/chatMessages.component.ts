@@ -12,6 +12,7 @@ export class ChatMessagesComponent {
 
   text = input.required<string>();
   @Input() audioUrl?: string;
+  @Input() imageInfo?: { url: string, alt: string };
 
 
 }
